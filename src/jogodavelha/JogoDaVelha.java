@@ -26,6 +26,7 @@ public class JogoDaVelha extends Application {
         stage.setTitle("Jogo da Velha com Minimax");
         stage.setScene(scene);
         stage.show();
+        
     }
 
     /**
