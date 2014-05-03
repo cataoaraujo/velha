@@ -27,90 +27,56 @@ public class PrincipalController implements Initializable {
     @FXML
     Label estatistica;
 
-    private int ganhou=0, pedeu=0, empate=0;
+    private int ganhou = 0, pedeu = 0, empate = 0;
     private Tabuleiro tabuleiro = new Tabuleiro();
+    private Minimax minimax = new Minimax();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         init();
     }
 
+    @FXML
     public void init() {
         tabuleiro = new Tabuleiro();
         setTabuleiro(tabuleiro);
         tabuleiro.setJogador(Jogador.Min); // Minha vez de Jogar
-        estatistica.setText("Ganhou: "+ganhou+" Perdeu: "+pedeu+" Empatou: "+empate);
-        
+        estatistica.setText("Ganhou: " + ganhou + " Perdeu: " + pedeu + " Empatou: " + empate);
+
     }
 
-    private Tabuleiro minimaxDecision(Tabuleiro tabuleiro) {
-        int melhor = MaxValue(tabuleiro);
-        ArrayList<Tabuleiro> filhos = tabuleiro.getTodosFilhos();
-        for (Tabuleiro filho : filhos) {
-            //filho.mostra();
-            //System.out.println("");
-            if (filho.getValor() == melhor) {
-                return filho;
-            }
-        }
-        return null;
-    }
-
-    private int MinValue(Tabuleiro tabuleiro) {
-        if (tabuleiro.isTerminal()) {
-            tabuleiro.setValor(tabuleiro.getResultado());
-            return tabuleiro.getValor();
-        } else {
-            tabuleiro.setValor(Integer.MAX_VALUE);
-            tabuleiro.setJogador(Jogador.Min);
-            ArrayList<Tabuleiro> filhos = tabuleiro.getFilhos(tabuleiro);
-            for (Tabuleiro filho : filhos) {
-                tabuleiro.setValor(Math.min(tabuleiro.getValor(), MaxValue(filho)));
-            }
-            return tabuleiro.getValor();
-        }
-    }
-
-    private int MaxValue(Tabuleiro tabuleiro) {
-        if (tabuleiro.isTerminal()) {
-            tabuleiro.setValor(tabuleiro.getResultado());
-            return tabuleiro.getValor();
-        } else {
-            tabuleiro.setValor(Integer.MIN_VALUE);
-            tabuleiro.setJogador(Jogador.Max);
-            ArrayList<Tabuleiro> filhos = tabuleiro.getFilhos(tabuleiro);
-            for (Tabuleiro filho : filhos) {
-                tabuleiro.setValor(Math.max(tabuleiro.getValor(), MinValue(filho)));
-            }
-            return tabuleiro.getValor();
-        }
-    }
-
+    @FXML
     public void marcaX(ActionEvent me) {
         if (tabuleiro.getJogador().equals(Jogador.Min)) {
-
             //Eu Joguei
             Button celula = (Button) me.getSource();
-            System.out.println(celula);
             if (celula.getText() == null || "".equals(celula.getText())) {
                 celula.setText("X");
                 tabuleiro.setX(Integer.parseInt(celula.getId().charAt(1) + "") - 1, Integer.parseInt(celula.getId().charAt(3) + "") - 1);
-                //Calculo o Minimax
+
+//Calculo o Minimax
                 tabuleiro.setJogador(Jogador.Max);
-                tabuleiro = minimaxDecision(tabuleiro);
-                //Computador Joga
+                tabuleiro = minimax.minimaxDecision(tabuleiro);
+
+//Computador Joga
                 setTabuleiro(tabuleiro);
                 tabuleiro.setJogador(Jogador.Min);
+
+//Mostra Resultado caso acabou o Jogo
                 if (tabuleiro.isTerminal()) {
                     JOptionPane.showMessageDialog(null, "Você ganhou? " + tabuleiro.perdeu() + "\nVocê perdeu? " + tabuleiro.ganhou() + "\nDeu empate? " + tabuleiro.empate());
-                    if(tabuleiro.ganhou())
+                    if (tabuleiro.ganhou()) {
                         pedeu++;
-                    if(tabuleiro.perdeu())
+                    }
+                    if (tabuleiro.perdeu()) {
                         ganhou++;
-                    if(tabuleiro.empate())
+                    }
+                    if (tabuleiro.empate()) {
                         empate++;
+                    }
                     this.init();
                 }
+
             } else {
                 if (celula.getText().equals("X")) {
                     JOptionPane.showMessageDialog(null, "Você já jogou ai, presta atenção!");
@@ -123,7 +89,7 @@ public class PrincipalController implements Initializable {
         }
     }
 
-    public void setTabuleiro(Tabuleiro tab) {
+    private void setTabuleiro(Tabuleiro tab) {
         L1C1.setText(tab.getXY(0, 0));
         L1C2.setText(tab.getXY(0, 1));
         L1C3.setText(tab.getXY(0, 2));

@@ -20,38 +20,12 @@ public class Tabuleiro {
     private Tabuleiro pai;
     private ArrayList<Tabuleiro> filhos = new ArrayList<Tabuleiro>();
 
-    public Tabuleiro getMelhorFilho() {
-        Tabuleiro m = new Tabuleiro();
-        int melhor = Integer.MIN_VALUE;
-        int i = 1;
-        for (Tabuleiro filho : filhos) {
-            //System.out.println("Filho "+(i++));
-            //filho.mostra();
-            
-            if (filho.getValor() > melhor) {
-                m = filho;
-                melhor = filho.getValor();
-              //  System.out.println("Melhor: "+melhor+" Ganhou? "+filho.ganhou());
-            }
-           // System.out.println("");
-        }
-        return m;
-    }
-
     public int getValor() {
         return valor;
     }
 
     public void setValor(int valor) {
         this.valor = valor;
-    }
-
-    public Tabuleiro getPai() {
-        return pai;
-    }
-
-    public void setPai(Tabuleiro pai) {
-        this.pai = pai;
     }
 
     public Jogador getJogador() {
@@ -110,6 +84,10 @@ public class Tabuleiro {
         return ("X".equals(mapa[0][2]) && "X".equals(mapa[1][1]) && "X".equals(mapa[2][0]));
     }
 
+    /**
+     * Verifica se houve empate
+     * @return 
+     */
     public boolean empate() {
         boolean empate = true;
         for (int i = 0; i < 3; i++) {
@@ -124,6 +102,10 @@ public class Tabuleiro {
         return empate && !ganhou();
     }
 
+    /**
+     * Verifica se o Computador Perdeu
+     * @return 
+     */
     public boolean perdeu() {
         return (verificaPerdeuHorizontal(0)
                 || verificaPerdeuHorizontal(1)
@@ -135,6 +117,10 @@ public class Tabuleiro {
                 || verificaPerdeuDiagonalSecundaria());
     }
 
+    /**
+     * Verifica se o computador ganhou
+     * @return 
+     */
     public boolean ganhou() {
         //return false;
         return (verificaHorizontal(0)
@@ -147,10 +133,19 @@ public class Tabuleiro {
                 || verificaDiagonalSecundaria());
     }
 
+    /**
+     * Verifica se ele é um nó folha
+     * @return TRUE caso for folha
+     * FALSE caso não for folha
+     */
     public boolean isTerminal() {
         return ganhou() || empate() || perdeu();
     }
 
+    /**
+     * 
+     * @return (int) o resultado de acordo com o tabuleiro, se o computador Ganhou(1), Perdeu(-1) ou Empatou(0).
+     */
     public int getResultado() {
         if (ganhou()) {
             valor=1;
@@ -165,6 +160,9 @@ public class Tabuleiro {
         }
     }
 
+    /**
+     * Mostra o tabuleiro formatado no Console.
+     */
     public void mostra() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -175,24 +173,34 @@ public class Tabuleiro {
         System.out.println("Utilidade: "+this.getValor());
     }
 
+    /**
+     * Só vai pegar a lista dos filhos
+     * Para descobrir quem são os filhos usar o getFilhos()
+     * @see getFilhos(Tabuleiro t)
+     * 
+     * @return 
+     */
     public ArrayList<Tabuleiro> getTodosFilhos(){
         return filhos;
     }
+    
+    /**
+     * Vai buscar todas as possibilidades (Filhos) do nó
+     * @param t
+     * @return 
+     */
     public ArrayList<Tabuleiro> getFilhos(Tabuleiro t) {
         filhos = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 try {
                     Tabuleiro filho = t.clone();
-                    filho.setPai(t);
                     if (filho.getXY(i, j) == null) {
                         if (jogador.equals(Jogador.Max)) {
                             filho.setO(i, j);
                         } else {
                             filho.setX(i, j);
                         }
-         //           filho.mostra();
-                        //         System.out.println("-----------------");
                         filho.getResultado();
                         filhos.add(filho);
                     }
