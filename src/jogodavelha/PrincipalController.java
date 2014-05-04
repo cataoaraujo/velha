@@ -30,7 +30,7 @@ public class PrincipalController implements Initializable {
     private int ganhou = 0, pedeu = 0, empate = 0;
     private Tabuleiro tabuleiro = new Tabuleiro();
     private Minimax minimax = new Minimax();
-
+    private int iniciou = 1;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         init();
@@ -40,7 +40,18 @@ public class PrincipalController implements Initializable {
     public void init() {
         tabuleiro = new Tabuleiro();
         setTabuleiro(tabuleiro);
-        tabuleiro.setJogador(Jogador.Min); // Minha vez de Jogar
+        iniciou = 1 - iniciou;
+        if (iniciou == 0) {
+            System.out.println("Você começa!");
+            tabuleiro.setJogador(Jogador.Min); // Minha vez de Jogar
+        } else {
+            System.out.println("Computador começa!");
+            //Calculo o Minimax
+            tabuleiro.setJogador(Jogador.Max);
+            tabuleiro = minimax.minimaxDecision(tabuleiro);
+            //Computador Joga
+            setTabuleiro(tabuleiro);
+        }
         estatistica.setText("Ganhou: " + ganhou + " Perdeu: " + pedeu + " Empatou: " + empate);
 
     }
