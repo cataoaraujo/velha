@@ -19,7 +19,7 @@ public class Tabuleiro {
 
     private Tabuleiro pai;
     private ArrayList<Tabuleiro> filhos = new ArrayList<Tabuleiro>();
-
+    
     public int getValor() {
         return valor;
     }
